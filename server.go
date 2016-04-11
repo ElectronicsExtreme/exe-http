@@ -15,10 +15,6 @@ const ()
 
 var ()
 
-func init() {
-
-}
-
 type ServerConfig struct {
 	ServeMux        *http.ServeMux
 	Address         string
