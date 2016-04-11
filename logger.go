@@ -1,4 +1,4 @@
-package exeserver
+package exehttp
 
 import (
 	"fmt"

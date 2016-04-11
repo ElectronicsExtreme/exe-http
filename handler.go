@@ -1,8 +1,7 @@
-package exeserver
+package exehttp
 
 import (
 	"bytes"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"net/http/httputil"

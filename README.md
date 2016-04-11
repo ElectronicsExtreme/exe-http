@@ -13,28 +13,28 @@ import (
 
 func main() {
     serveMux := http.NewServeMux()
-    handler := exeserver.NewHandler(&Handler{}, "test")
+    handler := exehttp.NewHandler(&Handler{}, "test")
     serveMux.Handle("/", handler)
     
-    configs := make([]exeserver.ServerConfig, 0, 0)
-    configs = append(configs, exeserver.ServerConfig{
+    configs := make([]exehttp.ServerConfig, 0, 0)
+    configs = append(configs, exehttp.ServerConfig{
         ServeMux:  serveMux,
         Address:   ":8080",
         TlsEnable: false,
     })
-    exeserver.ListenAndServe(configs)
+    exehttp.ListenAndServe(configs)
 }
 
 type Handler1 struct {
-    errorLogInfo *exeserver.LogInfo
-    transLogInfo *exeserver.LogInfo
+    errorLogInfo *exehttp.LogInfo
+    transLogInfo *exehttp.LogInfo
 }
 
-func (self *Handler) SetErrorLogInfo(logInfo *exeserver.LogInfo) {
+func (self *Handler) SetErrorLogInfo(logInfo *exehttp.LogInfo) {
     self.errorLogInfo = logInfo
 }
 
-func (self *Handler) SetTransLogInfo(logInfo *exeserver.LogInfo) {
+func (self *Handler) SetTransLogInfo(logInfo *exehttp.LogInfo) {
     self.transLogInfo = logInfo
 }
 
@@ -46,7 +46,7 @@ func (self *Data) Success() bool {
     return true
 }
 
-func (self *Handler) ServeHTTP(resp *exeserver.ResponseWriter, req *http.Request) {
+func (self *Handler) ServeHTTP(resp *exehttp.ResponseWriter, req *http.Request) {
     resp.WriteResults(&Data{Data: "Hellow World"})
 }
 ```
