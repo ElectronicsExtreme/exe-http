@@ -32,7 +32,6 @@ type Handler interface {
 	ServeHTTP(*ResponseWriter, *http.Request)
 	SetTransLogInfo(*LogInfo)
 	SetErrorLogInfo(*LogInfo)
-	SetResponseLogInfo(*LogInfo)
 }
 
 func NewHandler(handler Handler, api string) *CentralHandler {
@@ -65,7 +64,6 @@ func NewHandler(handler Handler, api string) *CentralHandler {
 }
 
 func (self *CentralHandler) ServeHTTP(httpResp http.ResponseWriter, req *http.Request) {
-	fmt.Println("start package")
 	//request log
 	data, err := dumpRequestBody(req)
 	if err != nil {
