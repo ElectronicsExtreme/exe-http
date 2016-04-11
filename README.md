@@ -13,9 +13,8 @@ import (
 
 func main() {
     serveMux := http.NewServeMux()
-    serveMux.HandleFunc("/", func(resp http.ResponseWriter, req *http.Request) {
-        resp.Write([]byte("Hello, world"))
-    })
+    handler := exeserver.NewHandler(&Handler{}, "test")
+    serveMux.Handle("/", handler)
     
     configs := make([]exeserver.ServerConfig, 0, 0)
     configs = append(configs, exeserver.ServerConfig{
@@ -24,5 +23,30 @@ func main() {
         TlsEnable: false,
     })
     exeserver.ListenAndServe(configs)
+}
+
+type Handler1 struct {
+    errorLogInfo *exeserver.LogInfo
+    transLogInfo *exeserver.LogInfo
+}
+
+func (self *Handler) SetErrorLogInfo(logInfo *exeserver.LogInfo) {
+    self.errorLogInfo = logInfo
+}
+
+func (self *Handler) SetTransLogInfo(logInfo *exeserver.LogInfo) {
+    self.transLogInfo = logInfo
+}
+
+type Data struct {
+    Data string `json:"data"`
+}
+
+func (self *Data) Success() bool {
+    return true
+}
+
+func (self *Handler) ServeHTTP(resp *exeserver.ResponseWriter, req *http.Request) {
+    resp.WriteResults(&Data{Data: "Hellow World"})
 }
 ```
