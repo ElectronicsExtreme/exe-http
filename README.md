@@ -12,17 +12,14 @@ import (
 )
 
 func main() {
-    serveMux := http.NewServeMux()
+	exehttp.StartLogger("log")
+	server := exehttp.NewServer(":9500")
     handler := exehttp.NewHandler(&Handler{}, "test")
-    serveMux.Handle("/", handler)
+    server..Handle("/", handler)
     
-    configs := make([]exehttp.ServerConfig, 0, 0)
-    configs = append(configs, exehttp.ServerConfig{
-        ServeMux:  serveMux,
-        Address:   ":8080",
-        TlsEnable: false,
-    })
-    exehttp.ListenAndServe(configs)
+    servers := make([]exehttp.Server, 0, 0)
+    servers = append(servers, server)
+    exehttp.ListenAndServe(serverss)
 }
 
 type Handler1 struct {
@@ -47,6 +44,6 @@ func (self *Data) Success() bool {
 }
 
 func (self *Handler) ServeHTTP(resp *exehttp.ResponseWriter, req *http.Request) {
-    resp.WriteResults(&Data{Data: "Hellow World"})
+    resp.WriteResults(&Data{Data: "Hello World"})
 }
 ```

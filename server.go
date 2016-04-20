@@ -15,14 +15,30 @@ const ()
 
 var ()
 
-type ServerConfig struct {
+type Server struct {
 	ServeMux        *http.ServeMux
 	Address         string
 	TlsEnable       bool
 	TlsCertificates []tls.Certificate
 }
 
-func ListenAndServe(configs []ServerConfig) uint {
+func NewServer(address string) Server {
+	server := Server{}
+	server.Address = address
+	server.TlsEnable = false
+	server.ServeMux = http.NewServeMux()
+	return server
+}
+
+func (self *Server) Handle(pattern string, handler http.Handler) {
+	self.ServeMux.Handle(pattern, handler)
+}
+
+func (self *Server) HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request)) {
+	self.ServeMux.HandleFunc(pattern, handler)
+}
+
+func ListenAndServe(configs []Server) uint {
 	var status uint = 0
 	var serversWg sync.WaitGroup
 	signalStopFlag := false
@@ -108,7 +124,7 @@ func ListenAndServe(configs []ServerConfig) uint {
 
 }
 
-func startServer(configs []ServerConfig) ([]net.Listener, chan terminateSignal, error) {
+func startServer(configs []Server) ([]net.Listener, chan terminateSignal, error) {
 	terminate := make(chan terminateSignal, len(configs))
 	listeners := make([]net.Listener, 0, len(configs))
 	for serverId, config := range configs {
@@ -165,7 +181,7 @@ func startServer(configs []ServerConfig) ([]net.Listener, chan terminateSignal, 
 	return listeners, terminate, nil
 }
 
-func createListener(config ServerConfig) (net.Listener, error) {
+func createListener(config Server) (net.Listener, error) {
 	listener, err := net.Listen("tcp", config.Address)
 	if err != nil {
 		return nil, err
