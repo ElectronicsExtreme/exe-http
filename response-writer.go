@@ -31,7 +31,7 @@ func (self *ResponseWriter) WriteResults(data interface{}) {
 		results.Success = data.Success()
 		httpStatus = http.StatusOK
 	default:
-		log.Printf("view_profile: unknown response type %T\n", data)
+		log.Printf("unknown response type %T\n", data)
 		self.WriteHeader(http.StatusInternalServerError)
 		return
 	}
