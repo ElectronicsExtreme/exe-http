@@ -51,6 +51,18 @@ func (self *ResponseWriter) WriteResults(data interface{}) {
 	self.responseLogInfo.Write()
 }
 
+func (self *ResponseWriter) WriteError(resp *ErrorResponse, description string) {
+	if description != "" {
+		self.WriteResults(&ErrorResponse{
+			ErrorTag:         resp.ErrorTag,
+			ErrorDescription: description,
+			HTTPStatus:       resp.HTTPStatus,
+		})
+	} else {
+		self.WriteResults(resp)
+	}
+}
+
 type ErrorResponse struct {
 	ErrorTag         string `json:"error"`
 	ErrorDescription string `json:"error_description"`
