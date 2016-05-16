@@ -8,7 +8,7 @@ package main
 import (
     "net/http"
 
-    "github.com/ElectronicsExtreme/exe-http"
+    "github.com/ElectronicsExtreme/exehttp"
 )
 
 func main() {
