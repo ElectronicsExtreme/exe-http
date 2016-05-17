@@ -8,7 +8,7 @@ import (
 
 type ResponseWriter struct {
 	http.ResponseWriter
-	responseLogInfo *LogInfo
+	ResponseLogInfo *LogInfo
 }
 
 func NewResponseWriter(resp http.ResponseWriter, logInfo *LogInfo) *ResponseWriter {
@@ -48,9 +48,9 @@ func (self *ResponseWriter) WriteResults(response interface{}) error {
 	self.Write(resultsByte)
 
 	//logWriter()
-	self.responseLogInfo.HTTPStatus = httpStatus
-	self.responseLogInfo.Body = string(resultsByte)
-	self.responseLogInfo.Write()
+	self.ResponseLogInfo.HTTPStatus = httpStatus
+	self.ResponseLogInfo.Body = string(resultsByte)
+	self.ResponseLogInfo.Write()
 	return nil
 }
 
