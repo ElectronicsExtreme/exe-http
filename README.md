@@ -36,14 +36,16 @@ func (self *Handler) SetTransLogInfo(logInfo *exehttp.LogInfo) {
 }
 
 type Data struct {
-    Data string `json:"data"`
-}
-
-func (self *Data) Success() bool {
-    return true
+    Info string `json:"info"`
 }
 
 func (self *Handler) ServeHTTP(resp *exehttp.ResponseWriter, req *http.Request) {
-    resp.WriteResults(&Data{Data: "Hello World"})
+	Response := &exehttp.Results{
+		Success: true,
+		HTTPStatus: http.StatusOK,
+		Data: &Data{Info: "Hello World"},
+	}
+		
+    resp.WriteResults(Response)
 }
 ```

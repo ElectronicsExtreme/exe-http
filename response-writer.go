@@ -2,7 +2,7 @@ package exehttp
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
 )
 
@@ -15,32 +15,34 @@ func NewResponseWriter(resp http.ResponseWriter, logInfo *LogInfo) *ResponseWrit
 	return &ResponseWriter{resp, logInfo}
 }
 
-func (self *ResponseWriter) WriteResults(data interface{}) {
+func (self *ResponseWriter) WriteResults(response interface{}) error {
 	results := Results{}
 	var httpStatus int = 0
-	switch data := data.(type) {
+	switch response := response.(type) {
 	case *ErrorResponse:
 		results.Success = false
-		if data.HTTPStatus == 0 {
-			log.Println("http status is not defined")
-			self.WriteHeader(http.StatusInternalServerError)
-			return
+		if response.HTTPStatus == 0 {
+			self.WriteResults(&ErrorStatusInternalServerError)
+			return fmt.Errorf("http status is not defined")
+		} else {
+			httpStatus = response.HTTPStatus
 		}
-		httpStatus = data.HTTPStatus
-	case OtherResponse:
-		results.Success = data.Success()
-		httpStatus = http.StatusOK
+		results.Data = response
+	case *Results:
+		results = *response
+		if response.HTTPStatus == 0 {
+			httpStatus = http.StatusOK
+		} else {
+			httpStatus = response.HTTPStatus
+		}
 	default:
-		log.Printf("unknown response type %T\n", data)
 		self.WriteHeader(http.StatusInternalServerError)
-		return
+		return fmt.Errorf("unknown response type %T\n", response)
 	}
-	results.Data = data
 	resultsByte, err := json.Marshal(&results)
 	if err != nil {
-		self.WriteHeader(http.StatusInternalServerError)
-		log.Println(err)
-		return
+		return err
+		self.WriteResults(&ErrorStatusInternalServerError)
 	}
 	self.WriteHeader(httpStatus)
 	self.Write(resultsByte)
@@ -49,6 +51,7 @@ func (self *ResponseWriter) WriteResults(data interface{}) {
 	self.responseLogInfo.HTTPStatus = httpStatus
 	self.responseLogInfo.Body = string(resultsByte)
 	self.responseLogInfo.Write()
+	return nil
 }
 
 func (self *ResponseWriter) WriteError(resp *ErrorResponse, description string) {
@@ -69,13 +72,10 @@ type ErrorResponse struct {
 	HTTPStatus       int    `json:"-"`
 }
 
-type OtherResponse interface {
-	Success() bool
-}
-
 type Results struct {
-	Success bool        `json:"success"`
-	Data    interface{} `json:"data"`
+	Success    bool        `json:"success"`
+	Data       interface{} `json:"data"`
+	HTTPStatus int         `json:"-"`
 }
 
 var ErrorStatusInternalServerError ErrorResponse = ErrorResponse{
