@@ -12,17 +12,17 @@ import (
 )
 
 func main() {
-	exehttp.StartLogger("log")
-	server := exehttp.NewServer(":9500")
+    exehttp.StartLogger("log")
+    server := exehttp.NewServer(":9500")
     handler := exehttp.NewHandler(&Handler{}, "test")
-    server..Handle("/", handler)
+    server.Handle("/", handler)
     
     servers := make([]exehttp.Server, 0, 0)
     servers = append(servers, server)
     exehttp.ListenAndServe(serverss)
 }
 
-type Handler1 struct {
+type Handler struct {
     errorLogInfo *exehttp.LogInfo
     transLogInfo *exehttp.LogInfo
 }
