@@ -81,5 +81,17 @@ type Results struct {
 var ErrorStatusInternalServerError ErrorResponse = ErrorResponse{
 	ErrorTag:         "internal_server_error",
 	ErrorDescription: "internal server error",
-	HTTPStatus:       500,
+	HTTPStatus:       http.StatusInternalServerError,
+}
+
+var ErrorStatusNotFound ErrorResponse = ErrorResponse{
+	ErrorTag:         "not_found",
+	ErrorDescription: "not found",
+	HTTPStatus:       http.StatusNotFound,
+}
+
+var ErrorStatusMethodNotAllowed ErrorResponse = ErrorResponse{
+	ErrorTag:         "method_not_allowed",
+	ErrorDescription: "method not allowed",
+	HTTPStatus:       http.StatusMethodNotAllowed,
 }
