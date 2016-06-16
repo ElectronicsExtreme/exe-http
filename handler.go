@@ -34,27 +34,22 @@ type Handler interface {
 }
 
 func NewHandler(handler Handler, api string) *CentralHandler {
-	refCode := randomString(6)
 	newHandler := &CentralHandler{}
 	newHandler.ErrorLogInfo = &LogInfo{
-		API:     api,
-		RefCode: refCode,
-		ch:      errorChannel,
+		API: api,
+		ch:  errorChannel,
 	}
 	newHandler.TransLogInfo = &LogInfo{
-		API:     api,
-		RefCode: refCode,
-		ch:      transactionChannel,
+		API: api,
+		ch:  transactionChannel,
 	}
 	newHandler.RequestLogInfo = &LogInfo{
-		API:     api,
-		RefCode: refCode,
-		ch:      requestChannel,
+		API: api,
+		ch:  requestChannel,
 	}
 	newHandler.ResponseLogInfo = &LogInfo{
-		API:     api,
-		RefCode: refCode,
-		ch:      requestChannel,
+		API: api,
+		ch:  requestChannel,
 	}
 	handler.SetErrorLogInfo(newHandler.ErrorLogInfo)
 	handler.SetTransLogInfo(newHandler.TransLogInfo)
@@ -63,6 +58,12 @@ func NewHandler(handler Handler, api string) *CentralHandler {
 }
 
 func (self *CentralHandler) ServeHTTP(httpResp http.ResponseWriter, req *http.Request) {
+	refCode := randomString(6)
+	self.ErrorLogInfo.RefCode = refCode
+	self.TransLogInfo.RefCode = refCode
+	self.RequestLogInfo.RefCode = refCode
+	self.ResponseLogInfo.RefCode = refCode
+
 	//request log
 	data, err := dumpRequestBody(req)
 	if err != nil {
