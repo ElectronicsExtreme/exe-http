@@ -45,6 +45,7 @@ func (self *ResponseWriter) WriteResults(response interface{}) error {
 		self.WriteResults(&ErrorStatusInternalServerError)
 	}
 	self.WriteHeader(httpStatus)
+	self.Header().Set("Content-Type", "application/json")
 	self.Write(resultsByte)
 
 	//logWriter()
