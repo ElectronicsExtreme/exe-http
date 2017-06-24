@@ -49,9 +49,11 @@ func (self *ResponseWriter) WriteResults(response interface{}) error {
 	self.Write(resultsByte)
 
 	//logWriter()
-	self.ResponseLogInfo.HTTPStatus = httpStatus
-	self.ResponseLogInfo.Body = string(resultsByte)
-	self.ResponseLogInfo.Write()
+	if self.ResponseLogInfo != nil {
+		self.ResponseLogInfo.HTTPStatus = httpStatus
+		self.ResponseLogInfo.Body = string(resultsByte)
+		self.ResponseLogInfo.Write()
+	}
 	return nil
 }
 
